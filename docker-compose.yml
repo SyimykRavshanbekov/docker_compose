@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  db:
+    ports:
+      - "5433:5432"
+    container_name: postgresql_container
+    image: postgres
+    environment:
+      - POSTGRES_DB=gadgetarium
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_USER=postgres
+    restart: unless-stopped
+  backend:
+    build: .
+    container_name: testapp_container
+    ports:
+      - "9090:9090"
+    environment:
+      db-url: jdbc:postgresql://db:5432/gadgetarium
+      db-username: postgres
+      db-password: 1234
+    depends_on:
+      - db
+    restart: unless-stopped
